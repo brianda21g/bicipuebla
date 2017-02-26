@@ -1,6 +1,39 @@
 extends layout
 
 block content
-  h1= title
-  p Bienvenido to #{title}
-  include footer
+	#map
+	include footer
+	script(type='text/javascript', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBRByRi_ZDiOrBiJy0s_iPF_mZSWhlKv38')
+	script.
+		var map;
+		var stations = !{JSON.stringify(stations)};
+
+		function addMarker(lat, lng, title, stationNumber){
+			map.addMarker({
+				lat: lat,
+				lng: lng,
+				title: title,
+				infoWindow: {
+					content: '<h4>Número de estación: '+stationNumber+'</h4><h5>'+title+'</h5><a href="#">Ver en maps</a>'
+				}
+			});
+		}
+
+		$(document).ready(function(){
+
+			map = new GMaps({
+				div: '#map',
+				lat: 19.043760,
+				lng: -98.198276
+			});
+
+			$.each(stations, function(i, item){
+				console.log(stations[i].longitude);
+				var latitude = stations[i].latitude;
+				var longitude = stations[i].longitude;
+				var address = stations[i].address;
+				var stationNumber = stations[i].number;
+				addMarker(latitude, longitude, address, stationNumber)
+			});
+		});
+		
